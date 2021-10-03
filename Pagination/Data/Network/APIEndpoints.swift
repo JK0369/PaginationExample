@@ -20,4 +20,13 @@ struct APIEndpoints {
     static func getImages(with url: String) -> Endpoint<Data> {
         return Endpoint(baseURL: url, sampleData: NetworkResponseMock.image)
     }
+
+    static func getSearchingPhotos(with photoSearchRequestDTO: PhotoSearchRequestDTO) -> Endpoint<PhotoSearchResponseDTO> {
+        return Endpoint(baseURL: "https://api.unsplash.com/",
+                        path: "search/photos",
+                        method: .get,
+                        queryParameters: photoSearchRequestDTO,
+                        headers: ["Authorization": "Client-ID \(Constants.accessKey)"],
+                        sampleData: NetworkResponseMock.photoSearch)
+    }
 }

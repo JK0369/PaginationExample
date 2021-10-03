@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class PhotoViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -25,7 +25,7 @@ class ViewController: UIViewController {
     }
 
     private func setupViews() {
-        view.backgroundColor = .white
+        view.backgroundColor = .black
         title = "photos"
     }
 
@@ -51,7 +51,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UITableViewDelegate {
+extension PhotoViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let contentHeight = scrollView.contentSize.height
         let yOffset = scrollView.contentOffset.y
@@ -62,9 +62,13 @@ extension ViewController: UITableViewDelegate {
             viewModel.loadData()
         }
     }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+    }
 }
 
-extension ViewController: UITableViewDataSourcePrefetching {
+extension PhotoViewController: UITableViewDataSourcePrefetching {
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { viewModel.prefetchImage(at: $0) }
     }

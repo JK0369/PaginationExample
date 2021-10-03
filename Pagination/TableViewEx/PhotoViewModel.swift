@@ -17,17 +17,21 @@ class PhotoViewModel {
     var dataSource: UITableViewDiffableDataSource<Section, Photo>!
     lazy var provider: Provider = ProviderImpl()
     lazy var imageCache = ImageCache(provider: provider)
+    var viewState = ViewState.idle
 
     // Load data
 
     func loadData() {
+        guard viewState == .idle else { return }
         currentPage += 1
 
         let photoListRequestDTO = PhotoListRequestDTO(page: currentPage)
         let endpoint = APIEndpoints.getPhotosInfo(with: photoListRequestDTO)
 
+        viewState = .isLoding
         provider.request(with: endpoint, completion: { [weak self] result in
             guard let weakSelf = self else { return }
+            self?.viewState = .idle
 
             switch result {
             case .success(let responseDTOs):
@@ -35,6 +39,7 @@ class PhotoViewModel {
                 if snapshot.sectionIdentifiers.isEmpty {
                     snapshot.appendSections([.main])
                 }
+                
                 var newPhotos = [Photo]()
                 responseDTOs.forEach{ newPhotos.append($0.toDomain()) }
                 snapshot.appendItems(newPhotos)

@@ -24,7 +24,7 @@ class ImageCache {
 
     private let cache = NSCache<NSURL, UIImage>()
     private var prefetches: [UUID] = []
-    private var completions: [NSURL: [ImageCompletion]] = [:]
+    private var completions: [NSURL: [ImageCompletion]]? = [:]
 
     // Prefetch
 
@@ -53,11 +53,11 @@ class ImageCache {
             return
         }
 
-        if completions[url] != nil {
-            completions[url]?.append(completion)
+        if completions?[url] != nil {
+            completions?[url]?.append(completion)
             return
         } else {
-            completions[url] = [completion]
+            completions?[url] = [completion]
         }
 
         provider.request(item.imageUrl) { [weak self] result in
@@ -65,7 +65,7 @@ class ImageCache {
             case .success(let data):
                 guard let image = UIImage(data: data) else { return }
 
-                guard let completions = self?.completions[url] else {
+                guard let completions = self?.completions?[url] else {
                     completion(item, nil)
                     return
                 }
@@ -80,18 +80,17 @@ class ImageCache {
                 completion(item, nil)
             }
 
-            self?.completions.removeValue(forKey: url)
+            self?.completions?.removeValue(forKey: url)
         }
     }
 
     // Reset
 
     func reset() {
-        completions.removeAll()
+        completions?.removeAll()
         prefetches.removeAll()
         cache.removeAllObjects()
     }
-
 
     // Cache
 
