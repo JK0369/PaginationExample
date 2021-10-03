@@ -64,8 +64,8 @@ class PhotoViewController2: UIViewController {
         viewModel.dataSource = UICollectionViewDiffableDataSource<Section, Photo>(collectionView: collectionView,
                                                                                   cellProvider: { [weak self] collectionView, indexPath, photo in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.identifier, for: indexPath)
-            self?.viewModel.loadImages(for: photo)
             (cell as? PhotoCollectionViewCell)?.model = photo
+            self?.viewModel.loadImages(for: photo)
 
             return cell
         })
@@ -109,7 +109,7 @@ extension PhotoViewController2: UICollectionViewDelegate {
         let heightRemainFromBottom = contentHeight - yOffset
 
         let frameHeight = scrollView.frame.size.height
-        if heightRemainFromBottom < frameHeight {
+        if heightRemainFromBottom < frameHeight * 2.0 {
             viewModel.loadData()
         }
     }
